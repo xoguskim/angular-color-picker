@@ -1,8 +1,10 @@
 .angular-color-picker {
     background: #fff;
     border: 1px solid #ddd;
-    padding: 20px;
+    padding: 10px;
+    /* margin: 10px; */
     display: inline-block;
+    user-select: none;
 }
 .angular-color-picker > ._variations {
     border: 1px solid #808080;
@@ -99,3 +101,44 @@
     height: 17%;
     filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff00ff', endColorstr='#ff0000')";
 }
+
+.angular-color-picker > ._recent {
+    height: 59px;
+    border: 1px solid #ddd;
+}
+.angular-color-picker > ._standard {
+    height: 59px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+}
+
+.angular-color-picker > ._recent > ._citem,
+.angular-color-picker > ._standard > ._citem {
+    width: 22px;
+    height: 22px;
+    float: left;
+    margin: 2px 4px;
+    border-radius: 3px;
+    border: 2px solid white;
+}
+
+.angular-color-picker > ._recent > ._citem.active,
+.angular-color-picker > ._standard > ._citem.active {
+    width: 22px;
+    height: 22px;
+    float: left;
+    margin: 2px 4px;
+    border-radius: 5px;
+    border: 2px solid red;
+}
+
+.angular-color-picker > ._recent > ._label,
+.angular-color-picker > ._standard > ._label {
+    background-color: #e6e6e6;
+    padding: 3px 5px;
+    margin-bottom: 3px;
+    font-size: 1em;
+    line-height: 1em;
+}
+

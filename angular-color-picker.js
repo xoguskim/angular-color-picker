@@ -152,6 +152,14 @@
             + '        <div class="_cursor" ng-style="{ top: hueCursor - 5 + \'px\' }"></div>'
             + '        <div class="_mouse-trap" ng-mousedown="startDrag($event, \'hue\')"></div>'
             + '    </div>'
+            + '    <div class="_standard">'
+            + '       <div class="_label">Standard Colors</div>'
+            + '       <div class="_citem" ng-style="colorStyle(citem)" ng-class="isActive(citem)" ng-click="selectStandard(citem)" ng-repeat="citem in standard track by $index"></div>'
+            + '    </div>'
+            + '    <div class="_recent">'
+            + '       <div class="_label">Recent Colors</div>'
+            + '       <div class="_citem" ng-style="colorStyle(citem)" ng-class="isActive(citem)" ng-click="selectRecent(citem)" ng-repeat="citem in recent track by $index" ></div>'
+            + '    </div>'
             + '</div>';
 
         return {
@@ -160,28 +168,41 @@
             replace: true,
             require: '?ngModel',
             scope: {
+                recent: '='
             },
 
             link: function ($scope, $element, $attributes, ngModel) {
                 $scope.hsv = { h: 0, s: 0, v: 0 };
+                $scope.standard = ['#ff0000', '#ff00ff', '#0000ff', '#00ffff', '#ffff00', '#d0d0d0', '#808080'];
+                if(!$scope.recent) $scope.recent = [];
+                if($scope.recent.length > $scope.standard.length)
+                    $scope.recent.splice($scope.standard.length);
+                $scope.colorStyle = function(color) {
+                    if(color) {
+                        return {'background-color' : color};
+                    }
+                    else {
+                        return {'background-color' : null};
+                    }
+                };
+
+                $scope.selectStandard = function(color) {
+                    setColorValue(color);
+                };
+
+                $scope.selectRecent = function(color) {
+                    setColorValue(color);
+                };
+
+                $scope.isActive = function(color) {
+                    return (color === $scope.color) ? 'active' : '';
+                };
+
+
 
                 if (ngModel) {
                     ngModel.$render = function () {
-                        if (/^#[0-9A-Fa-f]{6}$/.test(ngModel.$viewValue)) {
-                            $scope.color = ngModel.$viewValue;
-                            $scope.hsv = hexRgbToHsv($scope.color);
-                            $scope.colorCursor = {
-                                x: $scope.hsv.s * 200,
-                                y: (1 - $scope.hsv.v) * 200
-                            };
-                        } else {
-                            $scope.color = null;
-                            $scope.hsv = { h: 0.5 };
-                            $scope.colorCursor = null;
-                        }
-
-                        $scope.hueBackgroundColor = hsvToHexRgb($scope.hsv.h, 1, 1);
-                        $scope.hueCursor = $scope.hsv.h * 200;
+                        setColorValue(ngModel.$viewValue);
                     };
                 }
 
@@ -256,6 +277,24 @@
                         .one('mouseup', onMouseUp)
                         .one('touchend', onMouseUp);
                 };
+
+                function setColorValue(value) {
+                    if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                        $scope.color = value;
+                        $scope.hsv = hexRgbToHsv($scope.color);
+                        $scope.colorCursor = {
+                            x: $scope.hsv.s * 200,
+                            y: (1 - $scope.hsv.v) * 200
+                        };
+                    } else {
+                        $scope.color = null;
+                        $scope.hsv = { h: 0.5 };
+                        $scope.colorCursor = null;
+                    }
+
+                    $scope.hueBackgroundColor = hsvToHexRgb($scope.hsv.h, 1, 1);
+                    $scope.hueCursor = $scope.hsv.h * 200;
+                }
             }
         };
     }]);
